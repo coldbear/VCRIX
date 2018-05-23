@@ -26,11 +26,11 @@ lapply(libraries,
 #Plot VCRIX
 
 plot(
-  vcrix$date,
-  vcrix$vcrix,
-  type = "l",
-  col = "blue",
-  lwd = 2,
+  vcrix$date,   #x axis
+  vcrix$vcrix,  #y axis
+  type = "l",   #type of graph
+  col = "blue", 
+  lwd = 2,      #thickness of the line
   xlab = "Date",
   ylab = "VCRIX"
 )
@@ -92,7 +92,7 @@ with(
     type = "line",
     col = "red",
     ylab = "btc returns",
-    ylim = c(-0.3, 0.3),
+    ylim = c(-0.3, 0.3),#ensuring the proper scale
     xlab = NA
   )
 )
@@ -108,7 +108,7 @@ with(
     axes = FALSE,
     xlab = "",
     ylab = "",
-    ylim = c(0, 2000)
+    ylim = c(0, 2000)   #ensuring the proper scale
   )
 )
 
@@ -120,7 +120,7 @@ mtext(side = 4, line = 3, 'VCRIX')
 
 trend = ggplot(vcrix, aes(x = date, y = vcrix)) +
   geom_line(color = "blue") + theme_bw() +
-  theme(
+  theme(                             #setting up the plot theme
     panel.border = element_blank(),
     panel.grid.major = element_blank(),
     panel.grid.minor = element_blank(),

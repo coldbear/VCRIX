@@ -38,7 +38,7 @@ w <- weights[order(weights$crypto), ]
 p <- data[order(data$crypto), ]
 
 
-#Prepare the time series format
+#Transform into time series format
 
 wtable <- reshape(  #for weights
   w,
@@ -49,13 +49,13 @@ wtable <- reshape(  #for weights
 )
 ptable <- reshape(  #for prices
   p,
-  v.names = "price",
-  idvar = "date",
+  v.names = "price", #names of variables in the long format
+  idvar = "date",    #indicating time variable
   timevar = "crypto",
   direction = "wide"
 )
-wtable <- wtable[order(wtable$date), ]
-ptable <- ptable[order(ptable$date), ]
+ptable <- ptable[order(ptable$date), ] #alphabetic ordering of cryptos
+wtable <- wtable[order(wtable$date), ] #and corresponding weights
 
 
 #Ensure there are no NAs
