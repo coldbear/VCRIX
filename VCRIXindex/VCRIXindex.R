@@ -20,92 +20,92 @@ lapply(libraries,
 
 
 #Prepare data
-data2 <- data[, c("crypto_symbol", "price_usd", "date")]
-data2$date <- as.Date(data2$date)
-weights$date <- as.Date(weights$date)
+data2 = data[, c("crypto_symbol", "price_usd", "date")]
+data2$date = as.Date(data2$date)
+weights$date = as.Date(weights$date)
 
 
 #Ensure correct variable names
-colnames(weights) <- c("crypto", "weights", "date")
-colnames(data2) <- c("crypto", "price", "date")
+colnames(weights) = c("crypto", "weights", "date")
+colnames(data2) = c("crypto", "price", "date")
 
 
 #Select relevant components
 
-data <- data2[data2$crypto %in% weights$crypto, ]
+data = data2[data2$crypto %in% weights$crypto, ]
 
-w <- weights[order(weights$crypto), ]
-p <- data[order(data$crypto), ]
+w = weights[order(weights$crypto), ]
+p = data[order(data$crypto), ]
 
 
 #Transform into time series format
 
-wtable <- reshape(  #for weights
+wtable = reshape(  #for weights
   w,
   v.names = "weights",
   idvar = "date",
   timevar = "crypto",
   direction = "wide"
 )
-ptable <- reshape(  #for prices
+ptable = reshape(  #for prices
   p,
   v.names = "price", #names of variables in the long format
   idvar = "date",    #indicating time variable
   timevar = "crypto",
   direction = "wide"
 )
-ptable <- ptable[order(ptable$date), ] #alphabetic ordering of cryptos
-wtable <- wtable[order(wtable$date), ] #and corresponding weights
+ptable = ptable[order(ptable$date), ] #alphabetic ordering of cryptos
+wtable = wtable[order(wtable$date), ] #and corresponding weights
 
 
 #Ensure there are no NAs
 
-ptable[, -1] <- na.locf(ptable[, -1])
+ptable[, -1] = na.locf(ptable[, -1])
 
 
 #Convert prices into returns
 
-ret <- function(x) {
+ret = function(x) {
   diff(log(x))
 }
 
-returns <- colwise(ret)(ptable[, -1])
-returns$date <- ptable$date[-1]
+returns = colwise(ret)(ptable[, -1])
+returns$date = ptable$date[-1]
 
-returns$dat <- as.yearmon(returns$date, "%y-%m")
-wtable$dat <- as.yearmon(wtable$date, "%y-%m")
-wtable$date <- NULL
+returns$dat = as.yearmon(returns$date, "%y-%m")
+wtable$dat = as.yearmon(wtable$date, "%y-%m")
+wtable$date = NULL
 
 
 #Merge price and weight tables into the main dataset
 
-ts <- merge(returns, wtable, by = "dat")
-ts$dat <- NULL
+ts = merge(returns, wtable, by = "dat")
+ts$dat = NULL
 
 
 # Double check for missing values to avoid NA in var-covar matrix estimation
 
-ts[, grepl("price", names(ts))] <-
+ts[, grepl("price", names(ts))] =
   na.locf(ts[, grepl("price", names(ts))])
-is.na(ts) <- do.call(cbind, lapply(ts, is.infinite))
-ts[is.na(ts)] <- 0 #otherwise EWMA will return NAs
+is.na(ts) = do.call(cbind, lapply(ts, is.infinite))
+ts[is.na(ts)] = 0 #otherwise EWMA will return NAs
 
 
 #Estimating variance covariance matrix with EWMA
-elem <-
+elem =
   length(grep(x = colnames(ts), pattern = "price")) #number of cryptos
 
 #select lambda
-volaest <- EWMAvol(ts[, grepl("price", names(ts))], lambda = 0.82)
+volaest = EWMAvol(ts[, grepl("price", names(ts))], lambda = 0.82)
 #estimation takes around takes 5 min
 
 
 #reorganise the list of var-covar matrices
-vol <- volaest[1]
-v <- vol[[1]]
-var <- c(1:nrow(ts))
+vol = volaest[1]
+v = vol[[1]]
+var = c(1:nrow(ts))
 
-vv <-
+vv =
   lapply(1:nrow(v), function(x)
     matrix(
       v[x, ],
@@ -114,7 +114,7 @@ vv <-
       byrow = TRUE
     ))
 
-ww <-
+ww =
   as.matrix(ts[, grep(x = colnames(ts), pattern = "weights")]) #selecting weights
 
 
@@ -126,18 +126,18 @@ for (i in 1:nrow(ts)) {
 
 
 #Assembling vcrix dataset
-index <- data.frame("vola" = sqrt(var), "date" = ts$date)
-index$vcrix = c(1:nrow(index))
-index$divisor <- c(1:nrow(index))
-index$day = lubridate::day(index$date)
-index$month = lubridate::month(index$date)
+index         = data.frame("vola" = sqrt(var), "date" = ts$date)
+index$vcrix   = c(1:nrow(index))
+index$divisor = c(1:nrow(index))
+index$day     = lubridate::day(index$date)
+index$month   = lubridate::month(index$date)
 
 
 #Set up the re-evaluation threshold date (every first day of Feb, May, August, November)
-index$recalc <- 0
-index$recalc<-ifelse((index$day==1)&(index$month==2|index$month== 5|index$month== 8|index$month== 11), 1, 0)
-index$day <- NULL
-index$month <- NULL
+index$recalc = 0
+index$recalc=ifelse((index$day==1)&(index$month%in%c(2,5,8,11)), 1, 0)
+index$day = NULL
+index$month = NULL
 
 #Setting the base value of VCRIX to 1000
 
