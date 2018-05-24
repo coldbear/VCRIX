@@ -5,7 +5,7 @@ options(scipen = 999)
 
 #Load data
 
-load("vcrix.RData")
+load("vcrixdata.RData")
 
 # install and load packages
 libraries = c("lubridate", "zoo", "reshape2", "plyr", "MTS", "ggplot2")
