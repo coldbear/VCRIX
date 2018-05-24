@@ -140,18 +140,20 @@ index$day <- NULL
 index$month <- NULL
 
 #Setting the base value of VCRIX to 1000
-    
-index$vcrix[1] = 1000
-index$divisor[1] =index$vola[1]/index$vcrix[1]
 
+index$vcrix[1] = 1000
+index$divisor[1] = index$vola[1] / index$vcrix[1]
+
+
+#Calculating divisor
 
 for (i in 2:nrow(index)) {
-  if (index$recalc[i] == 1) {
-    index$vcrix[i] =index$vcrix[i-1]
-    index$divisor[i] =index$vola[i]/index$vcrix[i]
+  if (index$recalc[i] == 1) {  
+    index$vcrix[i] = index$vcrix[i - 1]
+    index$divisor[i] = index$vola[i] / index$vcrix[i]
   } else {
-    index$divisor[i] =index$divisor[i-1]
-    index$vcrix[i] =index$vola[i]/index$divisor[i] 
+    index$divisor[i] = index$divisor[i - 1]
+    index$vcrix[i] = index$vola[i] / index$divisor[i]
   }
 }
 
