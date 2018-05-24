@@ -1,8 +1,8 @@
 Name of Quantlet : VCRIXindex
 
-Published in : VCRIX - volatility index for crypto-currencies on the basis of CRIX
+Published in : 'VCRIX - volatility index for crypto-currencies on the basis of CRIX'
 
-Description : Contains the data preparation and the EWMA based derivation of VCRIX - volatility index for crypto-currencies on the basis of CRIX. 
+Description : Contains the data preparation and the EWMA based derivation of VCRIX, volatility index for crypto-currencies on the basis of CRIX. 
 
 Keywords : CRIX, VCRIX, crypto-currency, EWMA, volatility, index
 
