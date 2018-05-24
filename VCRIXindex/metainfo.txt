@@ -12,4 +12,4 @@ Author : Alisa Kolesnikova
 
 Submitted : Mon, May 23 2018 by Alisa Kolesnikova
 
-Datafile : vcrix.RData
+Datafile : vcrixdata.RData
