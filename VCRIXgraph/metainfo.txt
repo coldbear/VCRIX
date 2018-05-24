@@ -1,4 +1,4 @@
-Name of Quantlet : VCRIXgraphs
+Name of Quantlet : VCRIXgraph
 
 Published in : VCRIX - volatility index for crypto-currencies on the basis of CRIX
 
